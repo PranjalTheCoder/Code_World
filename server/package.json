@@ -1,5 +1,5 @@
 {
-	"name": "code-world-server",
+	"name": "code-sync-server",
 	"version": "1.0.0",
 	"description": "",
 	"main": "dist/server.js",
