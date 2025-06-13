@@ -10,7 +10,9 @@ import path from "path";
 dotenv.config();
 
 const app = express();
-
+// const path = require("path");
+// Middleware
+// app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(express.json());
 
 app.use(cors());
