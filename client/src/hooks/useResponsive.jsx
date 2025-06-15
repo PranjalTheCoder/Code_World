@@ -1,35 +1,53 @@
-import { useEffect, useState, useContext } from "react"
-import useWindowDimensions from "./useWindowDimensions"
+import PropTypes from "prop-types"
+import { createContext, useState } from "react"
+import { HiOutlineUsers } from "react-icons/hi2"
+import { IoSettingsOutline } from "react-icons/io5"
+import { PiChats } from "react-icons/pi"
+import { VscFiles } from "react-icons/vsc"
+import ChatPanel from "../components/chat/ChatPanel"
+import UsersTab from "../components/tabs/UsersTab"
+import FilesTab from "../components/tabs/FilesTab"
+import SettingsTab from "../components/tabs/SettingsTab"
 import TABS from "../utils/tabs"
-import TabContext from "../context/TabContext"
 
-function useResponsive() {
-    const { activeTab, setActiveTab, setIsSidebarOpen } = useContext(TabContext)
-    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-    const { height, isMobile } = useWindowDimensions()
+const TabContext = createContext()
 
-    useEffect(() => {
-        if (!isMobile && activeTab === TABS.Editor) {
-            setIsSidebarOpen(false)
-        }
-    }, [activeTab, isMobile, setIsSidebarOpen])
+function TabContextProvider({ children }) {
+    const [activeTab, setActiveTab] = useState(TABS.Editor)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+    const [tabComponents, setTabComponents] = useState({
+        [TABS.FILES]: <FilesTab />,
+        [TABS.USERS]: <UsersTab />,
+        [TABS.SETTINGS]: <SettingsTab />,
+        [TABS.Chat]: <ChatPanel />,
+    })
+    const tabIcons = {
+        [TABS.FILES]: <VscFiles size={30} />,
+        [TABS.USERS]: <HiOutlineUsers size={30} />,
+        [TABS.SETTINGS]: <IoSettingsOutline size={30} />,
+        [TABS.Chat]: <PiChats size={32} />,
+    }
 
-    useEffect(() => {
-        if (isMobile) {
-            setIsSidebarOpen(true)
-            setActiveTab(TABS.Editor)
-        }
-    }, [isMobile, setActiveTab, setIsSidebarOpen])
-
-    useEffect(() => {
-        if (height < 500) {
-            setIsMobileSidebarOpen(false)
-        } else {
-            setIsMobileSidebarOpen(true)
-        }
-    }, [height])
-
-    return { isMobileSidebarOpen }
+    return (
+        <TabContext.Provider
+            value={{
+                activeTab,
+                setActiveTab,
+                isSidebarOpen,
+                setIsSidebarOpen,
+                tabComponents,
+                setTabComponents,
+                tabIcons,
+            }}
+        >
+            {children}
+        </TabContext.Provider>
+    )
 }
 
-export default useResponsive
+TabContextProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+}
+
+export { TabContextProvider }
+export default TabContext
