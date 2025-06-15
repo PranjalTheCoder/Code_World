@@ -3,12 +3,16 @@ import { IoIosAdd } from "react-icons/io"
 import { MdDelete, MdModeEditOutline } from "react-icons/md"
 import FileContext from "../../context/FileContext"
 import FileEditor from "./FileEditor"
+import TabContext from "../../context/TabContext"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
 
 function FileSystem() {
     const filesContentRef = useRef(null)
     const { files, currentFile, openFile, deleteFile, createFile } =
         useContext(FileContext)
     const [editingFileId, setEditingFileId] = useState(null)
+    const { setIsSidebarOpen } = useContext(TabContext)
+    const { isMobile } = useWindowDimensions()
 
     const handleRenameFile = (e, id) => {
         e.stopPropagation()
@@ -33,6 +37,9 @@ function FileSystem() {
     const handleFileClick = (id) => {
         setEditingFileId(null)
         openFile(id)
+        if (isMobile) {
+            setIsSidebarOpen(false)
+        }
     }
 
     const fileSelectedClass = (id) => {
@@ -63,7 +70,7 @@ function FileSystem() {
                     return editingFileId !== file.id ? (
                         <div
                             className={
-                                "mb-2 flex rounded-md px-4 py-1 hover:bg-darkHover " +
+                                "mb-2 flex rounded-md px-4 py-2 hover:bg-darkHover " +
                                 fileSelectedClass(file.id)
                             }
                             key={file.id}
