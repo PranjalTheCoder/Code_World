@@ -1,25 +1,11 @@
-import { useContext, useEffect } from "react"
-import AppContext from "../context/AppContext"
+import { useEffect, useContext } from "react"
 import useLocalStorage from "./useLocalStorage"
+import { Context } from "../context/ContextProvider"
 
-function usePageEvents() {
-    const { settings, updateSettings } = useContext(AppContext)
+function useZoom() {
+    const { settings, updateSettings } = useContext(Context)
     const { fontSize } = settings
     const { setItem } = useLocalStorage()
-
-    useEffect(() => {
-        // Prevent user from leaving the page
-        const beforeUnloadHandler = (e) => {
-            const msg = "Changes you made may not be saved"
-            return (e.returnValue = msg)
-        }
-
-        window.addEventListener("beforeunload", beforeUnloadHandler)
-
-        return () => {
-            window.removeEventListener("beforeunload", beforeUnloadHandler)
-        }
-    }, [])
 
     useEffect(() => {
         const handleWheel = (e) => {
@@ -50,4 +36,4 @@ function usePageEvents() {
     }, [fontSize, settings, setItem, updateSettings])
 }
 
-export default usePageEvents
+export default useZoom
